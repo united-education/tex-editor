@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="token" content="__TOKEN__">
+<title>TeX Editor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400;1,8..60,600&display=swap">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<link rel="stylesheet" href="/app.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/mhchem.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script defer src="/app.js"></script>
+<script defer src="/pages.js"></script>
+<script defer src="/layout.js"></script>
+</head>
+<body>
+<header id="bar">
+  <button id="b-files" class="tb" title="Arquivos">☰</button>
+  <div id="title"><span id="fname">—</span><span id="dirty" title="Alterações não salvas"></span></div>
+  <div class="sep"></div>
+  <select id="style" title="Estilo do parágrafo">
+    <option value="para">Parágrafo</option>
+    <option value="chapter">Capítulo</option>
+    <option value="section">Seção</option>
+    <option value="subsection">Subseção</option>
+    <option value="subsection*">Subseção (sem número)</option>
+    <option value="subsubsection">Subsubseção</option>
+  </select>
+  <button class="tb fmt" data-cmd="bold" title="Negrito (Ctrl+B)"><b>N</b></button>
+  <button class="tb fmt" data-cmd="italic" title="Itálico (Ctrl+I)"><i>I</i></button>
+  <button class="tb fmt" data-cmd="underline" title="Sublinhado (Ctrl+U)"><u>S</u></button>
+  <button class="tb fmt" data-cmd="superscript" title="Sobrescrito (Ctrl+Shift+=)">x²</button>
+  <button class="tb fmt" data-cmd="subscript" title="Subscrito (Ctrl+=)">x₂</button>
+  <button class="tb" id="b-math" title="Inserir fórmula (Ctrl+M)">∑</button>
+  <div class="sep"></div>
+  <button class="tb" id="b-undo" title="Desfazer (Ctrl+Z)">↶</button>
+  <button class="tb" id="b-redo" title="Refazer (Ctrl+Y)">↷</button>
+  <div class="sep"></div>
+  <button class="tb" id="b-codes" title="Mostrar códigos ocultos (comentários, rótulos, espaçamentos)">¶</button>
+  <button class="tb wide" id="b-pages" title="Mostrar as páginas do PDF ao lado">PDF</button>
+  <span class="zoom" title="Zoom da página no editor">
+    <button class="tb" id="z-out">−</button><span id="zoom-v">—</span><button class="tb" id="z-in">+</button>
+    <button class="tb wide" id="z-fit" title="Ajustar à largura">Ajustar</button>
+  </span>
+  <button class="tb wide" id="b-source" title="Mostrar o fonte .tex ao lado">Fonte</button>
+  <button class="tb wide" id="b-diff" title="Ver o que mudou desde o último salvamento">Alterações</button>
+  <div class="grow"></div>
+  <button id="b-build" class="play" disabled>▶ Compilar</button>
+  <button id="build" class="build" title="Estado da compilação">—</button>
+  <span id="status"></span>
+  <button class="tb wide" id="b-saveas" title="Salvar como… (Ctrl+Shift+S)">Salvar como…</button>
+  <button class="tb primary" id="b-save" title="Salvar (Ctrl+S)">Salvar</button>
+</header>
+<div id="props"></div>
+<div id="banner" hidden></div>
+<main id="main">
+  <aside id="files">
+    <input id="filter" placeholder="Filtrar arquivos…" spellcheck="false">
+    <div id="tree"></div>
+  </aside>
+  <section id="doc"><div id="page" lang="pt-BR" spellcheck="true"></div></section>
+  <aside id="pages" hidden>
+    <div class="src-head"><span id="pages-title">Páginas</span></div>
+    <div id="pages-list"></div>
+  </aside>
+  <aside id="source" hidden>
+    <div class="src-head">
+      <span>Fonte .tex</span>
+      <div class="grow"></div>
+      <button class="tb wide" id="b-src-edit">Editar fonte</button>
+      <button class="tb wide primary" id="b-src-apply" hidden>Aplicar</button>
+      <button class="tb wide" id="b-src-cancel" hidden>Cancelar</button>
+    </div>
+    <pre id="src-view"></pre>
+    <textarea id="src-edit" spellcheck="false" hidden></textarea>
+  </aside>
+</main>
+<div id="modal" hidden>
+  <div class="dialog">
+    <div class="d-head"><span id="m-title"></span></div>
+    <textarea id="m-src" spellcheck="false"></textarea>
+    <div id="m-prev"></div>
+    <div class="d-foot">
+      <button class="tb wide danger" id="m-del">Remover</button>
+      <div class="grow"></div>
+      <span class="hint">Ctrl+Enter salva · Esc cancela</span>
+      <button class="tb wide" id="m-cancel">Cancelar</button>
+      <button class="tb wide primary" id="m-ok">Aplicar</button>
+    </div>
+  </div>
+</div>
+<div id="toast" hidden></div>
+</body>
+</html>

@@ -1,0 +1,438 @@
+:root {
+  --bg: #e9ebee;
+  --chrome: #f8f9fa;
+  --line: #d6d9de;
+  --ink: #1f2328;
+  --muted: #6a737d;
+  --accent: #2f6fd6;
+  --accent-soft: #e6eefb;
+  --paper: #ffffff;
+  --code: #7a3e9d;
+  --danger: #c62828;
+  --mark: #fff1a8;
+  font-family: Inter, system-ui, sans-serif;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink); }
+body { display: flex; flex-direction: column; font-size: 14px; }
+button { font: inherit; }
+
+#bar {
+  display: flex; align-items: center; gap: 4px; padding: 6px 10px;
+  background: var(--chrome); border-bottom: 1px solid var(--line); flex-wrap: wrap;
+}
+.tb {
+  min-width: 32px; height: 30px; padding: 0 8px; border: 1px solid transparent; border-radius: 6px;
+  background: transparent; color: var(--ink); cursor: pointer; font-size: 14px;
+}
+.tb:hover { background: #e8eaed; }
+.tb.on { background: var(--accent-soft); border-color: #b9cdf3; color: var(--accent); }
+.tb.primary { background: var(--accent); color: #fff; }
+.tb.primary:hover { background: #255bb3; }
+.tb.danger { color: var(--danger); }
+.tb:disabled { opacity: .4; cursor: default; }
+.sep { width: 1px; height: 22px; background: var(--line); margin: 0 4px; }
+.grow { flex: 1; }
+#title { font-weight: 600; display: flex; align-items: center; gap: 6px; max-width: 34vw; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+#dirty { width: 8px; height: 8px; border-radius: 50%; }
+#dirty.on { background: #e08a00; }
+#style { height: 30px; border: 1px solid var(--line); border-radius: 6px; background: #fff; padding: 0 6px; font: inherit; }
+#status { color: var(--muted); font-size: 12px; margin-right: 8px; }
+#banner { background: #fff4d6; border-bottom: 1px solid #f0d58a; padding: 8px 14px; display: flex; gap: 10px; align-items: center; }
+
+#main { flex: 1; display: flex; min-height: 0; }
+#files { width: 260px; border-right: 1px solid var(--line); background: var(--chrome); display: flex; flex-direction: column; }
+#files.hide { display: none; }
+#filter { margin: 8px; padding: 6px 8px; border: 1px solid var(--line); border-radius: 6px; font: inherit; }
+#tree { overflow: auto; flex: 1; padding: 0 4px 12px; font-size: 13px; }
+#tree .dir { color: var(--muted); padding: 6px 8px 2px; font-size: 11px; text-transform: uppercase; letter-spacing: .04em; }
+#tree .f { padding: 3px 8px 3px 14px; border-radius: 5px; cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#tree .f:hover { background: #e8eaed; }
+#tree .f.cur { background: var(--accent-soft); color: var(--accent); font-weight: 500; }
+#tree .f.dirty::after { content: " ●"; color: #e08a00; }
+
+#doc { flex: 1; overflow: auto; padding: 28px 16px 120px; }
+#page {
+  max-width: 860px; margin: 0 auto; background: var(--paper); padding: 56px max(48px, 8.5%);
+  box-shadow: 0 1px 3px rgba(0,0,0,.08), 0 8px 24px rgba(0,0,0,.06); min-height: 80vh;
+  font-family: "Source Serif 4", Georgia, serif; font-size: 17px; line-height: 1.5; color: #1d1d1f;
+}
+#page .empty-doc { color: var(--muted); font-family: Inter, sans-serif; text-align: center; padding: 80px 0; }
+
+.blk { outline: none; border-radius: 3px; white-space: pre-wrap; word-wrap: break-word; margin: 0 0 .7em; position: relative; }
+.blk:focus-within { background: #fbfcff; box-shadow: -10px 0 0 #fbfcff, 10px 0 0 #fbfcff, -12px 0 0 #dfe8fb; }
+.blk:empty::before { content: "Digite aqui…"; color: #b5b9bf; }
+.blk.locked { background: #fff6f6; cursor: pointer; }
+h1.blk { font-size: 1.9em; line-height: 1.2; margin: .2em 0 .8em; font-weight: 700; }
+h2.blk { font-size: 1.45em; line-height: 1.25; margin: 1.4em 0 .6em; font-weight: 700; }
+h3.blk { font-size: 1.18em; margin: 1.1em 0 .5em; font-weight: 700; }
+h4.blk, h5.blk { font-size: 1.02em; margin: 1em 0 .4em; font-weight: 700; }
+.blk.star::after { content: "*"; color: #c1c5cb; font-size: .6em; vertical-align: super; margin-left: 4px; }
+
+.list { margin: 0 0 .7em; padding-left: 2.2em; }
+.list .blk.item { margin: 0 0 .25em; }
+.list .blk.item::before {
+  content: attr(data-marker); position: absolute; left: -2.2em; width: 1.9em; text-align: right;
+  color: #555; font-variant-numeric: tabular-nums;
+}
+
+.env { margin: 1em 0 1.1em; border-radius: 6px; border: 1px solid var(--frame, #c8ccd2); background: var(--bg-env, #fafafa); }
+.env > .env-h {
+  padding: 5px 12px; font-family: Inter, sans-serif; font-weight: 600; font-size: 13.5px;
+  background: var(--tbg, #eef0f3); color: var(--tcol, #333); border-radius: 5px 5px 0 0; cursor: pointer;
+  display: flex; gap: 8px; align-items: baseline;
+}
+.env > .env-h .envname { font-family: ui-monospace, Consolas, monospace; font-weight: 400; font-size: 11px; opacity: .55; margin-left: auto; }
+.env > .env-h:hover { filter: brightness(.97); }
+.env > .env-b { padding: 10px 14px 4px; }
+.env.bar { border: 0; border-left: 4px solid var(--frame); border-radius: 3px; }
+.env.bar > .env-h { background: transparent; color: var(--frame); padding-bottom: 0; }
+.env.italic > .env-b { font-style: italic; }
+.env.small > .env-b { font-size: .9em; }
+.env.plain { border: 0; background: transparent; }
+.env.plain > .env-h { display: none; }
+.env.plain > .env-b { padding: 0; }
+.env.center > .env-b { text-align: center; }
+.env.quote > .env-b { padding-left: 2em; font-style: italic; }
+body.codes .env.plain { outline: 1px dashed #d0d4da; }
+body.codes .env.plain > .env-h { display: flex; background: transparent; color: var(--muted); font-size: 11px; padding: 0 4px; }
+
+.atom { white-space: normal; cursor: pointer; border-radius: 3px; }
+.atom:hover { background: #eef3fd; outline: 1px solid #c9d8f5; }
+.atom.k-math .katex, .atom.k-ce .katex { font-size: 1.05em; }
+.atom.k-dmath { display: block; text-align: center; margin: .4em 0; }
+.atom.k-si, .atom.k-sym { color: inherit; }
+.atom.k-ref { font-family: Inter, sans-serif; font-size: .78em; color: var(--accent); background: var(--accent-soft); padding: 0 4px; }
+.atom.k-cmd { font-family: ui-monospace, Consolas, monospace; font-size: .74em; color: var(--code); background: #f5eefa; padding: 1px 4px; }
+.atom.k-env { font-family: ui-monospace, Consolas, monospace; font-size: .74em; color: var(--code); background: #f5eefa; padding: 1px 4px; }
+.atom.k-br { color: #b0b4ba; font-family: Inter, sans-serif; font-size: .8em; }
+.atom.k-layout, .atom.k-comment { display: none; }
+body.codes .atom.k-layout, body.codes .atom.k-comment {
+  display: inline; font-family: ui-monospace, Consolas, monospace; font-size: .7em; color: #8a8f96; background: #f1f2f4; padding: 0 3px;
+}
+.atom.k-img img { max-height: 90px; vertical-align: middle; }
+.atom.err { color: var(--danger); font-family: ui-monospace, Consolas, monospace; font-size: .8em; }
+
+.grp.sz-small, .grp.sz-footnotesize { font-size: .88em; }
+.grp.sz-large, .grp.sz-Large { font-size: 1.15em; }
+.sc { font-variant: small-caps; }
+.sf { font-family: Inter, sans-serif; }
+code { font-family: ui-monospace, Consolas, monospace; font-size: .88em; }
+
+.macro { border: 1px dashed #c9b7d6; border-radius: 5px; padding: 0 4px; background: #fcf9fe; }
+.macro .mname { font-family: ui-monospace, Consolas, monospace; font-size: .7em; color: var(--code); margin-right: 4px; user-select: none; }
+.macro .mraw { font-family: ui-monospace, Consolas, monospace; font-size: .74em; color: #555; background: #f1ecf5; border-radius: 3px; padding: 0 3px; margin-right: 3px; }
+.macro .marg { outline: none; border-radius: 3px; }
+.macro .marg:focus { background: #f4ecfb; }
+.macro .marg + .marg::before, .macro .mraw + .marg::before { content: ""; }
+.macro.solo { display: block; padding: 8px 12px; margin: 2px 0; }
+.macro.solo .mname { display: block; margin-bottom: 4px; font-size: .75em; }
+.macro.solo .marg { display: block; padding: 2px 0; }
+.macro.solo .marg + .marg { border-top: 1px dotted #e2d6ea; margin-top: 4px; padding-top: 6px; }
+.macro .mimg { display: block; max-width: 100%; margin: 6px auto 8px; border-radius: 3px; }
+.macro .mimg.missing { width: 92%; padding: 18px; text-align: center; background: #eceff1; color: #546e7a; font: 12px Inter, sans-serif; }
+
+.raw { margin: .8em 0; border-radius: 5px; cursor: pointer; position: relative; }
+.raw:hover { outline: 2px solid #c9d8f5; }
+.raw pre { margin: 0; padding: 8px 12px; background: #f6f7f9; border: 1px solid #e3e5e8; border-radius: 5px; font-size: 12.5px; line-height: 1.45; max-height: 15em; overflow: hidden; white-space: pre-wrap; font-family: ui-monospace, Consolas, monospace; color: #444; }
+.raw .tag { position: absolute; top: 4px; right: 8px; font: 11px Inter, sans-serif; color: var(--muted); background: rgba(255,255,255,.85); padding: 0 4px; border-radius: 3px; }
+.raw table { border-collapse: collapse; margin: 0 auto; font-size: .92em; }
+.raw td { border: 1px solid #c9cdd3; padding: 3px 9px; vertical-align: top; }
+.raw.math { text-align: center; padding: 4px 0; }
+.raw img { max-width: 100%; max-height: 360px; display: block; margin: 0 auto 4px; }
+
+.cmd { font-family: ui-monospace, Consolas, monospace; font-size: 12px; color: #7d8590; margin: .3em 0; cursor: pointer; display: flex; gap: 8px; align-items: center; }
+.cmd:hover { color: var(--code); }
+.cmd .open { font-family: Inter, sans-serif; font-size: 12px; }
+.comment { display: none; font-family: ui-monospace, Consolas, monospace; font-size: 12px; color: #9aa0a6; white-space: pre-wrap; margin: .2em 0; cursor: pointer; }
+body.codes .comment { display: block; }
+
+#source { width: 42%; min-width: 320px; border-left: 1px solid var(--line); background: #fbfbfc; display: flex; flex-direction: column; }
+.src-head { display: flex; align-items: center; gap: 6px; padding: 6px 10px; border-bottom: 1px solid var(--line); font-weight: 600; font-size: 13px; }
+#src-view, #src-edit { flex: 1; margin: 0; overflow: auto; padding: 12px 14px; font: 12.5px/1.55 ui-monospace, Consolas, monospace; white-space: pre-wrap; word-break: break-word; color: #333; }
+#src-edit { border: 0; outline: none; resize: none; background: #fff; }
+#src-view mark { background: var(--mark); border-radius: 2px; }
+
+#modal { position: fixed; inset: 0; background: rgba(20,24,30,.35); display: flex; align-items: center; justify-content: center; z-index: 10; }
+#modal[hidden] { display: none; }
+.dialog { width: min(760px, calc(100vw - 32px)); background: #fff; border-radius: 10px; box-shadow: 0 20px 60px rgba(0,0,0,.25); display: flex; flex-direction: column; max-height: 86vh; }
+.d-head { padding: 12px 16px; font-weight: 600; border-bottom: 1px solid var(--line); }
+#m-src { margin: 12px 16px 0; min-height: 140px; height: 32vh; resize: vertical; padding: 10px; border: 1px solid var(--line); border-radius: 6px; font: 13px/1.5 ui-monospace, Consolas, monospace; }
+#m-prev { margin: 10px 16px 0; padding: 10px; min-height: 40px; border-radius: 6px; background: #f8f9fb; overflow: auto; max-height: 30vh; font-family: "Source Serif 4", Georgia, serif; font-size: 16px; }
+#m-prev:empty { display: none; }
+#m-prev pre { margin: 0; font-size: 12px; white-space: pre-wrap; }
+.d-foot { display: flex; gap: 6px; align-items: center; padding: 12px 16px; }
+.hint { color: var(--muted); font-size: 12px; margin-right: 6px; }
+.diff { font: 12.5px/1.5 ui-monospace, Consolas, monospace; white-space: pre-wrap; margin: 12px 16px 0; overflow: auto; max-height: 64vh; border: 1px solid var(--line); border-radius: 6px; }
+.diff div { padding: 0 8px; }
+.diff .add { background: #e6ffec; }
+.diff .del { background: #ffebe9; }
+.diff .gap { color: var(--muted); background: #f4f5f7; }
+
+#toast { position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%); background: #24292f; color: #fff; padding: 8px 14px; border-radius: 6px; font-size: 13px; z-index: 20; max-width: 80vw; }
+#toast.err { background: var(--danger); }
+
+@media (max-width: 900px) {
+  #files { position: absolute; z-index: 5; height: calc(100% - 48px); box-shadow: 4px 0 16px rgba(0,0,0,.1); }
+  #page { padding: 32px 22px; }
+  #source { display: none; }
+}
+
+.saveas { font-family: Inter, system-ui, sans-serif; font-size: 14px; display: flex; flex-direction: column; gap: 10px; }
+.sa-opt { display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; cursor: pointer; background: #fff; }
+.sa-opt:has(input:checked) { border-color: #b9cdf3; background: var(--accent-soft); }
+.sa-opt input { margin-top: 3px; }
+.sa-desc { color: var(--muted); font-size: 13px; margin-top: 2px; line-height: 1.45; }
+.sa-label { font-size: 13px; font-weight: 500; margin-top: 4px; }
+.sa-name { padding: 7px 9px; border: 1px solid var(--line); border-radius: 6px; font: 13px ui-monospace, Consolas, monospace; }
+.sa-info { font-size: 13px; line-height: 1.45; display: flex; flex-direction: column; gap: 4px; }
+.sa-info .warn { color: #8a5a00; }
+.sa-info .muted { color: var(--muted); }
+
+/* ---------- páginas (PDF real) ---------- */
+#pages { width: 38%; min-width: 300px; border-left: 1px solid var(--line); background: #d9dce1; display: flex; flex-direction: column; }
+#pages .src-head { background: var(--chrome); }
+#pages-list { flex: 1; overflow: auto; padding: 14px; display: flex; flex-direction: column; align-items: center; gap: 14px; }
+.pg { position: relative; background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,.18); flex: none; cursor: pointer; }
+.pg canvas { display: block; width: 100%; }
+.pg canvas.stale { opacity: .55; }
+.pg .ov { position: absolute; inset: 0; pointer-events: none; }
+.pg .r-focus { position: absolute; border: 2px solid var(--accent); background: rgba(47,111,214,.10); border-radius: 3px; }
+.pg .r-hover { position: absolute; border: 1px dashed #e08a00; background: rgba(224,138,0,.07); border-radius: 3px; }
+.pg-n { position: absolute; top: -1px; left: -1px; font: 600 11px Inter, sans-serif; background: rgba(36,41,47,.78); color: #fff; padding: 2px 7px; border-radius: 0 0 5px 0; }
+.pg-fill { font-weight: 400; opacity: .8; }
+
+.build { height: 26px; padding: 0 10px; border: 1px solid var(--line); border-radius: 13px; background: #fff; font: 12px Inter, sans-serif; color: var(--muted); cursor: pointer; margin-right: 6px; }
+.build.run { color: #8a5a00; border-color: #f0d58a; background: #fff8e6; }
+.build.ok { color: #1b5e20; border-color: #b9dfbb; background: #f1f9f1; }
+.build.err { color: var(--danger); border-color: #f3b8b8; background: #fff3f3; }
+.buildinfo { font: 13px/1.5 Inter, sans-serif; display: flex; flex-direction: column; gap: 6px; }
+.buildinfo .err-line b { color: var(--danger); margin-right: 6px; }
+.buildinfo .err-line.link { cursor: pointer; }
+.buildinfo .err-line.link:hover { text-decoration: underline; }
+.buildinfo .log { font: 11.5px/1.45 ui-monospace, Consolas, monospace; background: #f6f7f9; padding: 8px; border-radius: 5px; max-height: 40vh; overflow: auto; white-space: pre-wrap; }
+.buildinfo .warn { color: #8a5a00; }
+
+/* marca de início de página dentro do texto */
+.pagemark { display: flex; align-items: center; gap: 10px; margin: 14px -40px 12px; padding: 3px 40px; border-top: 2px dashed #c3c8cf; font: 11.5px Inter, sans-serif; color: #6a737d; cursor: pointer; user-select: none; position: relative; }
+.pagemark .pm-n { font-weight: 600; color: #3d4450; background: #fff; padding: 1px 8px; border: 1px solid #c3c8cf; border-radius: 10px; margin-top: -14px; }
+.pagemark .pm-prev { margin-top: -14px; background: #fff; padding: 0 4px; }
+.pagemark .pm-bar { width: 70px; height: 5px; background: #e6e8eb; border-radius: 3px; overflow: hidden; margin-top: -14px; }
+.pagemark .pm-bar i { display: block; height: 100%; background: #7fa7e8; }
+.pagemark.stale { opacity: .45; }
+.env-b .pagemark, .col .pagemark { margin-left: -14px; margin-right: -14px; padding-left: 14px; }
+
+.flash { animation: flash 1.2s ease-out; }
+@keyframes flash { 0% { background: #fff1a8; } 100% { background: transparent; } }
+.builderr { outline: 2px solid var(--danger) !important; outline-offset: 2px; }
+.builderr::after { content: attr(data-err); display: block; font: 12px Inter, sans-serif; color: var(--danger); margin-top: 4px; }
+
+/* blocos de cola (\par\noindent, \hfill) e quebras de página */
+.glue { display: none; }
+body.codes .glue { display: block; font: 11px ui-monospace, Consolas, monospace; color: #9aa0a6; }
+.cmd.pbreak { border-top: 2px solid #e08a00; color: #b06a00; padding-top: 3px; margin: 14px 0; }
+.cmd.pbreak .pb-label { font: 600 11.5px Inter, sans-serif; text-transform: uppercase; letter-spacing: .04em; }
+
+/* colunas lado a lado (minipages) */
+.row { display: flex; justify-content: space-between; gap: 0; margin: .6em 0 .9em; align-items: flex-start; }
+.row > .col { position: relative; min-width: 0; margin: 0; }
+.env.col { border: 1px dashed #b9c3d0 !important; background: rgba(240,244,250,.5) !important; border-radius: 4px; }
+.env.col > .env-h { display: none !important; }
+.env.col > .env-b { padding: 6px 8px 0 !important; }
+.col-handle { position: absolute; top: 0; bottom: 0; right: -11px; width: 10px; cursor: col-resize; z-index: 2; }
+.col-handle::after { content: ""; position: absolute; top: 20%; bottom: 20%; left: 4px; width: 2px; background: #b9c3d0; border-radius: 1px; }
+.col-handle:hover::after { background: var(--accent); }
+
+/* alça, menu e arraste */
+.grip { position: fixed; z-index: 30; width: 22px; height: 26px; line-height: 26px; text-align: center; font-size: 15px; color: #8a919a; border-radius: 5px; cursor: grab; user-select: none; touch-action: none; }
+.grip:hover { background: #e8eaed; color: var(--ink); }
+body.dragging, body.dragging * { cursor: grabbing !important; user-select: none !important; }
+.unit-hover { box-shadow: 0 0 0 2px #c9d8f5; border-radius: 4px; }
+.drag-src { opacity: .4; }
+.drop-ind { position: fixed; z-index: 31; background: var(--accent); border-radius: 2px; pointer-events: none; box-shadow: 0 0 0 2px rgba(47,111,214,.2); }
+.drag-ghost { position: fixed; z-index: 32; max-width: 300px; padding: 6px 10px; background: #fff; border: 1px solid #c9d8f5; border-radius: 6px; box-shadow: 0 6px 18px rgba(0,0,0,.15); font: 12.5px Inter, sans-serif; color: #333; pointer-events: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.umenu { position: fixed; z-index: 40; min-width: 230px; background: #fff; border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,.16); padding: 5px; display: flex; flex-direction: column; font: 13px Inter, sans-serif; }
+.umenu .mi { text-align: left; padding: 7px 10px; border: 0; background: transparent; border-radius: 5px; cursor: pointer; color: var(--ink); }
+.umenu .mi:hover { background: var(--accent-soft); }
+.umenu .mi.danger { color: var(--danger); }
+.umenu .msep { height: 1px; background: var(--line); margin: 4px 2px; }
+.umenu .mwidths { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; padding: 6px 8px; }
+.umenu .ml { font-size: 12px; color: var(--muted); margin-right: 4px; }
+.umenu .chip { border: 1px solid var(--line); background: #fff; border-radius: 12px; padding: 2px 8px; font-size: 12px; cursor: pointer; }
+.umenu .chip.on, .umenu .chip:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
+.img-handle { position: fixed; z-index: 30; width: 18px; height: 18px; border-radius: 4px; background: var(--accent); border: 2px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,.3); cursor: nwse-resize; touch-action: none; }
+.img-w { position: absolute; top: 8px; right: 8px; background: rgba(36,41,47,.85); color: #fff; font: 600 12px Inter, sans-serif; padding: 3px 8px; border-radius: 4px; pointer-events: none; z-index: 3; }
+.macro[data-img] { position: relative; }
+.macro .marg.mhide { display: -webkit-box !important; -webkit-box-orient: vertical; -webkit-line-clamp: 1; overflow: hidden; opacity: .5; font-size: .82em; font-family: Inter, sans-serif; }
+.macro .marg.mhide::before { content: "não impresso · "; font-weight: 600; }
+.macro .marg.mhide:focus { -webkit-line-clamp: unset; opacity: .85; }
+
+/* ---------- modo página: o editor com as medidas e a fonte do PDF ---------- */
+@font-face { font-family: "LM Roman"; src: url(/font/lmroman10-regular.otf); }
+@font-face { font-family: "LM Roman"; src: url(/font/lmroman10-bold.otf); font-weight: 700; }
+@font-face { font-family: "LM Roman"; src: url(/font/lmroman10-italic.otf); font-style: italic; }
+@font-face { font-family: "LM Roman"; src: url(/font/lmroman10-bolditalic.otf); font-weight: 700; font-style: italic; }
+#page { --bs: 1.5em; position: relative; }
+body.pageview #doc { padding: 22px 18px 90px; }
+body.pageview #page {
+  font-family: "LM Roman", "Latin Modern Roman", "Source Serif 4", Georgia, serif; color: #000; min-height: 0;
+  box-shadow: 0 1px 3px rgba(0,0,0,.14), 0 6px 18px rgba(0,0,0,.08);
+}
+body.pageview #page .blk { margin: 0; }
+body.pageview #page .blk.para { text-indent: var(--pi); text-align: justify; hyphens: auto; }
+body.pageview #page .env:not(.decl) .blk.para, body.pageview #page .list .blk.para,
+body.pageview #page .noindent .blk.para, body.pageview #page .blk.para.noind { text-indent: 0; }
+body.pageview #page .blk:focus-within { background: transparent; box-shadow: none; }
+body.pageview .macro.solo { border-color: transparent; background: transparent; padding: 0; }
+body.pageview .macro.solo > .mname { display: none; }
+body.pageview .macro.solo:hover { border-color: #d9cce3; }
+.env.decl { margin: 0; }
+.env.decl > .env-b > .blk:first-child { margin-top: 0; }
+
+/* fim de página: espaço livre (em escala), margens e a página seguinte */
+.pband { display: block; position: relative; user-select: none; cursor: default; font-family: Inter, sans-serif; text-indent: 0; line-height: 1.2; text-align: left; white-space: normal; }
+.pband > * { display: block; }
+.pband .pb-blank { margin: 0 var(--mr, 0) 0 var(--ml, 0); }
+.pband .pb-blank.free {
+  display: flex; align-items: center; justify-content: center; outline: 1px dashed #9db8e8; outline-offset: -1px;
+  background: repeating-linear-gradient(135deg, rgba(47,111,214,.04) 0 8px, rgba(47,111,214,.09) 8px 16px);
+}
+.pband .pb-free { font-size: 12px; color: var(--accent); background: rgba(255,255,255,.9); padding: 2px 9px; border-radius: 10px; }
+.pband .pb-foot { position: relative; }
+.pband .pb-num { position: absolute; left: 50%; top: 35%; transform: translateX(-50%); font-size: 11px; color: #a0a6ad; }
+.pband .pb-gap { height: 24px; background: var(--bg); box-shadow: inset 0 7px 7px -7px rgba(0,0,0,.28), inset 0 -7px 7px -7px rgba(0,0,0,.28); }
+.pband .pb-head { position: relative; }
+.pband .pb-label, .pv-top { position: absolute; top: 10px; left: var(--ml, 40px); font: 600 11.5px Inter, sans-serif; color: #6a737d; }
+.pband .pb-skip { font-weight: 400; color: #b06a00; }
+.pv-top { user-select: none; }
+.pband.last .pb-foot { display: none; }
+.pband.stale .pb-blank, .pband.stale .pb-label { opacity: .5; }
+
+/* figura flutuante: o LaTeX escolhe a página */
+#page .floatp { outline: 1px dashed #e0a040; outline-offset: 3px; }
+#page .floatp::before { content: "flutua → pág. " attr(data-fp); position: absolute; right: 0; top: -1.5em; font: 11px Inter, sans-serif; color: #b06a00; background: #fff8e6; padding: 1px 6px; border-radius: 3px; text-indent: 0; z-index: 1; }
+
+/* espaço vertical (\vspace): altura real, borda de baixo arrastável */
+.vsp { position: relative; margin: 0; cursor: pointer; }
+.vsp::before { content: ""; position: absolute; left: -14px; top: 0; bottom: 0; border-left: 2px solid #f0c27a; }
+.vsp:hover, .vsp.sel { background: repeating-linear-gradient(0deg, rgba(224,138,0,.08) 0 4px, transparent 4px 8px); }
+.vsp-l { position: absolute; left: -20px; transform: translateX(-100%); top: 0; font: 10.5px Inter, sans-serif; color: #b06a00; white-space: nowrap; opacity: 0; pointer-events: none; }
+.vsp:hover .vsp-l, .vsp.sel .vsp-l { opacity: 1; }
+.vsp.neg { border-top: 2px dotted #e57373; }
+.vsp-h { position: absolute; left: 0; right: 0; bottom: -4px; height: 9px; cursor: ns-resize; z-index: 2; }
+.vsp-h:hover { background: rgba(224,138,0,.35); }
+.blk.phantom:empty::before { content: "Linha vazia: não aparece no PDF. Digite um texto, ou tecle Enter de novo para criar um espaço de 1 linha."; font: 12px Inter, sans-serif; color: #9aa0a6; }
+
+/* seleção e barra de propriedades */
+#page .sel { outline: 2px solid var(--accent) !important; outline-offset: 3px; border-radius: 2px; }
+#props { display: flex; align-items: center; gap: 4px; padding: 5px 10px; background: #fff; border-bottom: 1px solid var(--line); font: 12.5px Inter, sans-serif; flex-wrap: wrap; min-height: 40px; }
+.pp-hint { color: var(--muted); }
+.pp-g { display: flex; align-items: center; gap: 3px; padding: 0 8px; border-left: 1px solid var(--line); }
+.pp-g:first-child { border-left: 0; padding-left: 0; }
+.pp-head b { font-weight: 600; }
+.pp-page { color: var(--accent); background: var(--accent-soft); padding: 1px 8px; border-radius: 10px; margin-left: 6px; white-space: nowrap; }
+.pp-stale { color: #8a5a00; margin-left: 6px; }
+.pp-l { color: var(--muted); margin-right: 3px; }
+.pp-sub { color: var(--muted); margin: 0 2px 0 5px; }
+.pb { height: 26px; min-width: 26px; padding: 0 7px; border: 1px solid var(--line); background: #fff; border-radius: 5px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; color: var(--ink); font: inherit; white-space: nowrap; }
+.pb:hover { background: #eef3fd; border-color: #c9d8f5; }
+.pb.on { background: var(--accent); color: #fff; border-color: var(--accent); }
+.pb:disabled { opacity: .35; cursor: default; background: #fff; }
+.pb.danger { color: var(--danger); }
+.pp-sel { height: 26px; border: 1px solid var(--line); border-radius: 5px; font: inherit; background: #fff; }
+.pp-range { width: 110px; }
+.pp-v { min-width: 34px; text-align: center; font-variant-numeric: tabular-nums; }
+.pp-end { margin-left: auto; }
+.zoom { display: inline-flex; align-items: center; gap: 2px; }
+#zoom-v { font-size: 12px; min-width: 38px; text-align: center; color: var(--muted); }
+.drop-ind.box { background: rgba(47,111,214,.16); border: 2px solid var(--accent); }
+.pband .pb-rest { position: absolute; left: var(--ml, 40px); bottom: -34px; font-size: 11.5px; color: var(--muted); }
+/* comandos que abrem parágrafo (\estrategia{...}): como no PDF */
+.macro.mblock { display: block; border: 0; background: transparent; padding: 0; margin: 0; border-radius: 0; text-indent: 0; }
+.macro.mblock > .mname { display: none; }
+.macro.mblock:hover { outline: 1px dashed #d9cce3; outline-offset: 1px; }
+.macro.mblock:hover > .mname { display: inline; position: absolute; right: 0; top: -1.2em; font-size: 10px; }
+.macro.mblock { position: relative; }
+.macro .mchip { font-weight: 700; font-style: normal; padding: 0 .3em; margin-right: .5em; }
+.macro.mblock .marg { display: inline; }
+.atom.k-cmd.ablock { display: block; font-family: inherit; font-size: inherit; color: inherit; background: transparent; padding: 0; text-indent: 0; }
+.atom.k-cmd.ablock .mchip { font-weight: 700; padding: 0 .3em; }
+body.pageview #page .blk.heading.tf { font-size: var(--hsize, 1.3em); line-height: 1.25; }
+body.pageview #page h1.blk.heading.tf { margin: .3em 0 1.2em; }
+body.pageview #page h2.blk.heading.tf { margin: 1.1em 0 .55em; }
+body.pageview #page h3.blk.heading.tf, body.pageview #page h4.blk.heading.tf { margin: 1em 0 .45em; }
+.row[data-align="right"] { justify-content: flex-end; }
+/* modo página: sem o nome técnico do ambiente no título das caixas */
+body.pageview .env > .env-h .envname { display: none; }
+
+/* ---------- modo página: medidas do LaTeX (1 pt = var(--pt)) ---------- */
+/* texto que não sai no PDF não aparece */
+.macro .marg.mhide { display: none !important; }
+body.pageview #page .katex, body.pageview #page .atom.k-math .katex, body.pageview #page .atom.k-ce .katex { font-size: 1em; }
+/* caixas tcolorbox: borda, cantos, recuos e espaço antes/depois do preâmbulo */
+body.pageview #page .env.tcb {
+  margin: calc(var(--bskip) * var(--pt)) 0 calc(var(--askip) * var(--pt));
+  background: var(--bg-env, #f2f2f2); box-shadow: none; overflow: hidden;
+  border-style: solid; border-color: var(--frame, #404040);
+  border-width: calc(var(--trule) * var(--pt)) calc(var(--rrule) * var(--pt)) calc(var(--brule) * var(--pt)) calc(var(--lrule) * var(--pt));
+  border-radius: calc(var(--arc) * var(--pt));
+}
+body.pageview #page .env.tcb > .env-h {
+  display: block; font-family: inherit; font-size: var(--tsize, 1em); font-weight: 700; line-height: inherit;
+  background: var(--tbg, #808080); color: var(--tcol, #fff); border-radius: 0; cursor: default;
+  padding: calc((var(--boxsep) + var(--ttop)) * var(--pt)) calc((var(--boxsep) + var(--pr)) * var(--pt)) calc((var(--boxsep) + var(--tbot)) * var(--pt)) calc((var(--boxsep) + var(--pl)) * var(--pt));
+}
+body.pageview #page .env.tcb > .env-b {
+  padding: calc((var(--boxsep) + var(--ptop)) * var(--pt)) calc((var(--boxsep) + var(--pr)) * var(--pt)) calc((var(--boxsep) + var(--pbot)) * var(--pt)) calc((var(--boxsep) + var(--pl)) * var(--pt));
+}
+body.pageview #page .env.tcb.small > .env-b { font-size: 0.913em; }
+body.pageview #page .env.tcb > .env-b > :first-child { margin-top: 0; }
+body.pageview #page .env.tcb > .env-b > :last-child { margin-bottom: 0; }
+/* listas: topsep e itemsep do LaTeX/enumitem */
+body.pageview #page .list { margin: calc(var(--topsep, 9) * var(--pt)) 0; padding-left: 2.5em; }
+body.pageview #page .list .blk.item { margin: 0; }
+body.pageview #page .list > .blk.item + .blk.item { margin-top: calc(var(--itemgap, 9) * var(--pt)); }
+body.pageview #page .list .blk.item::before { left: -2.5em; width: 2em; color: inherit; }
+/* títulos (titlesec): antes 3,5ex / depois 2,3ex na seção; 3,25ex / 1,5ex na subseção */
+body.pageview #page .blk.heading[data-h="section"] { margin: calc(3.5 * var(--ex)) 0 calc(2.3 * var(--ex)); }
+body.pageview #page .blk.heading[data-h="subsection"], body.pageview #page .blk.heading[data-h="subsubsection"] { margin: calc(3.25 * var(--ex)) 0 calc(1.5 * var(--ex)); }
+body.pageview #page .blk.heading + .blk.para { text-indent: 0; }
+/* citação do LaTeX: recuo de 2,5em dos dois lados, sem itálico */
+body.pageview #page .env.quote > .env-b { padding: 0 2.5em; font-style: normal; }
+body.pageview #page .env.quote, body.pageview #page .env.center { margin: calc(9 * var(--pt)) 0; }
+/* imagens: sem folga extra; ambiente center em volta (topsep + partopsep) */
+body.pageview #page .macro .mimg { margin: 0 auto; border-radius: 0; }
+body.pageview #page .macro.solo.mcenter { margin: calc(12 * var(--pt)) 0; }
+body.pageview #page .macro .marg.mcentered { text-align: center; text-indent: 0; }
+/* legenda (\caption): "Figura 1.1:" + texto; centralizada se cabe numa linha */
+.macro .capname { user-select: none; }
+body.pageview #page .macro.solo .marg.mcap { display: inline; }
+body.pageview #page .macro.solo { text-align: center; }
+body.pageview #page .macro.solo .capname { display: inline; }
+.macro .capwrap { display: block; }
+body.pageview #page .macro .capwrap { display: table; margin: calc(10 * var(--pt)) auto 0; text-align: justify; text-indent: 0; hyphens: auto; }
+body.pageview #page .macro .capwrap .marg { display: inline !important; padding: 0; border: 0; }
+/* compilar só no botão: cinza quando o PDF está em dia */
+.play { height: 28px; padding: 0 12px; border-radius: 6px; border: 1px solid var(--line); background: #f1f3f5; color: #9aa0a6; font: 600 13px Inter, sans-serif; cursor: default; margin-right: 6px; }
+.play.need { background: #2e7d32; border-color: #2e7d32; color: #fff; cursor: pointer; }
+.play.need:hover { background: #256b29; }
+/* tamanho do bloco em cm */
+.measure { position: fixed; z-index: 33; pointer-events: none; background: #1f6feb; color: #fff; font: 600 11.5px Inter, sans-serif; padding: 2px 7px; border-radius: 4px; white-space: nowrap; box-shadow: 0 1px 3px rgba(0,0,0,.2); }
+/* modo página: nada que não sai no PDF (o id da imagem, o contorno da figura flutuante) */
+body.pageview #page .macro[data-img] > .mraw { display: none; }
+body.pageview #page .floatp { outline: 0; }
+body.pageview #page .floatp::before { display: none; }
+body.pageview #page .floatp:hover, body.pageview #page .floatp.sel { outline: 1px dashed #e0a040; }
+body.pageview #page .floatp:hover::before, body.pageview #page .floatp.sel::before { display: block; }
+/* o TeX aperta um pouco os espaços para caber mais uma palavra; o navegador só estica.
+   -0,05em deixa 79% dos parágrafos com o mesmo número de linhas do PDF (era 66%) */
+body.pageview #page { word-spacing: -0.05em; }
+body.pageview #page .pband, body.pageview #page .env-h { word-spacing: normal; }
+/* \begin{raggedright}/centering/raggedleft: o parágrafo segue o alinhamento do envoltório */
+#page .env-b.aligned .blk, body.pageview #page .env-b.aligned .blk.para { text-align: inherit; text-indent: 0; hyphens: manual; }
+.pg { cursor: default; }
+/* figura flutuante desenhada na página onde o PDF a pôs */
+.fslot { display: block; text-indent: 0; text-align: initial; white-space: normal; }
+.fhome { display: none !important; }

@@ -8,11 +8,12 @@ quebras de linha, `\,`, `---`, CRLF.
 ## Uso
 
 ```bash
-tex-editor ~/material/livros/biologia/EM1/livro        # uma pasta
-tex-editor ~/material/livros/biologia/EM1/livro/capitulos/cap03.tex
+tex-editor caminho/do/projeto          # uma pasta
+tex-editor caminho/do/projeto/main.tex # um arquivo
 ```
 
-O comando abre uma janela do Edge (modo app) em `http://localhost:7357`.
+O comando abre o navegador em `http://localhost:7357` (no Windows/WSL, uma
+janela do Edge em modo app; no Linux, `xdg-open`).
 Opções: `--no-open` (não abre janela), `TEX_EDITOR_PORT=8000` (outra porta).
 O processo fica rodando no terminal. Ctrl+C encerra.
 
@@ -42,14 +43,14 @@ preâmbulo, que o editor lê dos `.tex` da pasta e das pastas acima.
 
 ### O editor é a página
 
-O editor compila o livro em segundo plano com o **tectonic** e desenha o
-texto como ele sai no PDF:
+O editor compila o documento com o **tectonic** e desenha o texto como ele
+sai no PDF:
 
 - **Medidas do próprio LaTeX:** largura da mancha, corpo da letra,
   entrelinha, recuo de parágrafo e margens vêm da compilação (o editor
-  acrescenta uma linha que escreve essas medidas no `.log`). A fonte é a
-  mesma do PDF (Latin Modern, lida do cache do tectonic). As linhas quebram
-  quase sempre nos mesmos lugares que no PDF.
+  acrescenta uma linha que escreve essas medidas no `.log`). Quando a fonte
+  do documento está no cache do tectonic, o editor usa a mesma fonte do PDF,
+  e as linhas quebram quase sempre nos mesmos lugares.
 - **Fim de cada página:** uma faixa mostra onde a página termina, inclusive
   no meio de um parágrafo, com o espaço em branco que sobrou desenhado em
   escala ("4,1 cm livres no fim da página 6"), a margem, o número da página e
@@ -58,25 +59,23 @@ texto como ele sai no PDF:
   de cada página do PDF e a procura no texto. Enquanto isso não chega, usa o
   SyncTeX. Páginas que só têm figura, ou que vêm de outro arquivo, aparecem
   indicadas na faixa.
-- **Figuras flutuantes** (`\imagem`) ficam marcadas com "flutua → pág. N": o
-  LaTeX escolhe o lugar delas.
+- **Figuras flutuantes** aparecem na página e na altura em que o LaTeX as
+  colocou no PDF. Se o LaTeX juntar figuras numa página sem texto, essa
+  página aparece também no editor.
 - **Estilos do preâmbulo:** caixas (`\newtcolorbox`), títulos
-  (`\titleformat`) e comandos que abrem parágrafo com etiqueta (como
-  `\estrategia`, `\resolucao`) aparecem com as cores, tamanhos e etiquetas
-  definidos lá.
+  (`\titleformat`) e comandos que abrem parágrafo com etiqueta aparecem com
+  as cores, tamanhos e etiquetas definidos lá.
 - **Zoom:** botões − / + e **Ajustar** na barra. O botão **PDF** mostra o PDF
-  real ao lado; clicar numa página dele leva ao trecho.
+  real ao lado, só para conferir.
 
 A compilação só acontece quando você manda: botão **▶ Compilar** (ou F5).
 Ele fica cinza quando o PDF já corresponde ao texto e verde quando há
-mudanças. Cada compilação leva cerca de 8 s num capítulo de 44 páginas. Nada
-é gravado no disco para isso: o editor compila a versão da tela numa pasta
-temporária.
+mudanças. Nada é gravado no disco para isso: o editor compila a versão da
+tela numa pasta temporária.
 
 Passar o mouse num bloco mostra o tamanho dele na página, em cm
 ("16,0 × 14,2 cm"). Legendas aparecem com o número da figura ("Figura 1.1:"),
-lido do `.aux` da última compilação. Texto que não sai no PDF (a descrição
-usada para gerar uma imagem, o nome do arquivo da imagem) não aparece.
+lido do `.aux` da última compilação. Texto que não sai no PDF não aparece.
 
 ### Barra de propriedades
 
@@ -89,8 +88,9 @@ está:
 | Letra A− / A+ / tamanho | envolve o bloco em `\begin{small}` … `\end{small}` (ou `footnotesize`, `large`…); "normal" tira |
 | Alinhar | `\begin{raggedright}`, `centering`, `raggedleft`; "justificado" tira |
 | Largura (bloco) | põe o bloco numa `minipage` da largura escolhida; 100% desfaz |
-| Largura (imagem) | argumento opcional da imagem, `\imagem[0.5]{…}` |
-| Fixar / Deixar flutuar | troca `\imagem` por `\imagemH` e vice-versa |
+| Largura (imagem) | argumento opcional da macro de imagem |
+| Imagem à esquerda / centro / direita | põe a imagem numa `minipage` da largura dela, alinhada |
+| Fixar / Deixar flutuar | troca `\imagem` (flutuante) por `\imagemH` (fixa) e vice-versa, quando o preâmbulo define as duas |
 | Espaço antes / depois | `\vspace{0.5\baselineskip}` antes ou depois; negativo aperta |
 | ↑ ↓ (ou Alt+↑ / Alt+↓) | sobe ou desce o bloco um lugar |
 | ◂ pág. / pág. ▸ | leva o bloco para a página anterior ou seguinte |
@@ -154,14 +154,13 @@ As colunas viram `minipage` lado a lado:
 ```
 
 O `\vspace{0pt}` alinha as colunas pelo topo. Dentro de uma coluna ou caixa,
-um `\imagem` (figura flutuante) vira `\imagemH`, porque o LaTeX não aceita
+`\imagem` vira `\imagemH`, porque o LaTeX não aceita
 figura flutuante ali.
 
-Na primeira vez que você muda a largura de uma imagem, o editor pede para
-alterar a definição do `\imagem` no preâmbulo: a largura passa a ser um
-argumento opcional, e as imagens que já existem continuam com 92%. A
-descrição usada para gerar a imagem só sai no PDF quando o arquivo da imagem
-falta, então o editor a mostra recolhida, marcada como "não impresso".
+O editor reconhece as macros de imagem definidas no preâmbulo (comandos que
+chamam `\includegraphics`). Na primeira vez que você muda a largura de uma
+imagem, ele pede para alterar a definição da macro: a largura passa a ser um
+argumento opcional, e as imagens que já existem mantêm a largura atual.
 
 O tectonic tem que estar instalado, em `~/.local/bin/tectonic` ou no caminho
 da variável `TEX_EDITOR_TECTONIC`. O pdf.js e o KaTeX vêm de CDN, então o
@@ -169,7 +168,7 @@ editor precisa de internet.
 
 ## Arquivos que incluem outros (`\input`, `\include`)
 
-Cada `.tex` é editado separadamente. Uma linha `\input{capitulos/cap03}`
+Cada `.tex` é editado separadamente. Uma linha `\input{capitulos/cap01}`
 aparece como um botão **Abrir**. **Salvar grava todos os arquivos
 alterados**, porque uma mudança de diagramação pode mexer no preâmbulo
 também. Os arquivos com alterações pendentes ficam marcados com ● na lista.
@@ -190,26 +189,26 @@ também. Os arquivos com alterações pendentes ficam marcados com ● na lista.
 Limites do `.tex` completo:
 - Imagens, `.sty` e `.bib` não são copiados. Salve na mesma pasta do original
   para os caminhos continuarem valendo.
-- Um `\input` dentro de uma macro, como o `\incluipas` do preâmbulo, não é
-  expandido, porque depende de condições avaliadas na compilação.
+- Um `\input` dentro de uma macro não é expandido, porque depende de
+  condições avaliadas na compilação.
 - Inclusões circulares e arquivos não encontrados são listados no aviso.
 
 ## Segurança
 
 - Ao abrir, cada trecho é reconstruído a partir do modelo e comparado com o
   original. Um trecho que não bate fica "travado" e só pode ser editado como
-  código. Nos 1.676 arquivos de `~/material/livros` nenhum trecho ficou
-  travado.
+  código.
 - Na primeira gravação de cada arquivo, a versão do disco vai para
   `~/.local/share/tex-editor/backups/`.
-- Se o arquivo mudar no disco (VS Code, git), o editor recarrega sozinho ou
-  avisa quando há alterações não salvas. Ao salvar, ele recusa sobrescrever
+- Se o arquivo mudar no disco (outro editor, git), o editor recarrega sozinho
+  ou avisa quando há alterações não salvas. Ao salvar, ele recusa sobrescrever
   uma versão mais nova sem confirmação.
 
-Para conferir a fidelidade numa pasta inteira:
+Para conferir a fidelidade numa pasta inteira (quantos trechos ficariam
+travados):
 
 ```bash
-tex-editor --check ~/material/livros
+tex-editor --check caminho/da/pasta
 ```
 
 ## Compilar
@@ -227,13 +226,16 @@ cargo test
   caractere exibido guarda o fonte que o gerou. Ao editar, o texto novo é
   alinhado com o antigo (prefixo, sufixo e LCS), e só o que mudou é
   reescapado.
+- `src/styles.rs` lê do preâmbulo os estilos de caixas, títulos e macros.
 - `src/main.rs` é um servidor HTTP local (`tiny_http`) com o estado de cada
   arquivo e o histórico de desfazer.
 - `src/build.rs` achata o arquivo principal com as versões da tela, anotando
   a origem de cada linha. Depois compila com o tectonic numa thread e
   converte o SyncTeX em retângulos por linha do fonte.
 - `src/ops.rs` tem as operações de diagramação sobre o fonte: mover, colunas,
-  larguras, quebra de página e a largura opcional das macros de imagem.
-- `web/` é a interface. `app.js` cuida da edição, `pages.js` do PDF, do modo página e das
-  quebras de página, e `layout.js` da seleção, da barra de propriedades, da alça, do arraste, das colunas e das
-  imagens. KaTeX, com mhchem, e pdf.js vêm de CDN.
+  larguras, alinhamento de imagens, quebra de página e a largura opcional das
+  macros de imagem.
+- `web/` é a interface. `app.js` cuida da edição, `pages.js` do PDF, do modo
+  página e das quebras de página, e `layout.js` da seleção, da barra de
+  propriedades, da alça, do arraste, das colunas e das imagens. KaTeX, com
+  mhchem, e pdf.js vêm de CDN.
